@@ -67,7 +67,7 @@
 1. Клонируйте репозиторий:
 
 ```bash
-git clone https://github.com/your-username/php-etl.git
+git clone git@github.com:errand/php-etl.git
 cd php-etl
 ```
 
@@ -76,7 +76,7 @@ cd php-etl
 
 3. Пример работы скрипта:
 
-```php import-data.php estate.xlsx```
+```php public/import-data.php estate.xlsx```
 
 
 ## API
