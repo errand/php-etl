@@ -45,8 +45,6 @@
 │ │ └── FeedGenerator.php 
 │ └── /Utils 
 │ │ └── Logger.php 
-├── /docker 
-│ └── nginx.conf 
 ├── docker-compose.yml 
 ├── .env 
 └── README.md

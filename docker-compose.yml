@@ -6,6 +6,7 @@ services:
     volumes:
       - ./public:/var/www/html/public
       - ./data:/var/www/html/data
+      - ./src:/var/www/html/src
     networks:
       - app-network
 

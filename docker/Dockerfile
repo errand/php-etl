@@ -22,19 +22,21 @@ RUN apt-get update && apt-get install -y \
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Устанавливаем PhpSpreadsheet через Composer
+# Устанавливаем рабочую директорию
 WORKDIR /var/www/html
-COPY composer.json composer.lock ./
-RUN composer install --no-dev
 
-# Копируем файлы проекта
-COPY . /var/www/html
+# Копируем только composer.json и composer.lock для установки зависимостей
+COPY ../composer.json ../composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
+
+# Копируем все остальные файлы проекта
+COPY ../ ./
 
 # Устанавливаем права
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Настраиваем рабочую директорию
+# Настраиваем рабочую директорию для PHP
 WORKDIR /var/www/html/public
 
 # Указываем порт
