@@ -1,46 +1,40 @@
 <?php
+
 namespace Models;
 
-use PDO;
-use Utils\Logger;
-
+/**
+ * Class Contact
+ * Работа с сущностью контактов.
+ *
+ * @package Models
+ */
 class Contact extends BaseModel
 {
-    private Logger $logger;
+    /**
+     * @var string
+     * Название таблицы в базе данных.
+     */
+    protected string $table = 'contacts';
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->logger = new Logger();
-    }
-
+    /**
+     * Найти контакт по имени или создать новый, если не найден.
+     *
+     * @param string $name Имя контакта.
+     * @param string $phones Номера телефонов.
+     *
+     * @return int ID найденного или созданного контакта.
+     */
     public function findOrCreate(string $name, string $phones): int
     {
-        $contact = $this->findByName($name);
+        // Ищем контакт по имени.
+        $contact = $this->findByField('name', $name);
 
+        // Если контакт найден, возвращаем его ID.
         if ($contact) {
             return $contact['id'];
         }
 
+        // Если контакт не найден, создаем новый и возвращаем его ID.
         return $this->create(['name' => $name, 'phones' => $phones]);
-    }
-
-    private function findByName(string $name): ?array
-    {
-        $query = $this->pdo->prepare("SELECT * FROM contacts WHERE name = :name");
-        $query->execute(['name' => $name]);
-        return $query->fetch(PDO::FETCH_ASSOC) ?: null;
-    }
-
-    public function create(array $data): int
-    {
-        $query = $this->pdo->prepare("INSERT INTO contacts (name, phones) VALUES (:name, :phones)");
-        $query->execute([
-            'name' => $data['name'],
-            'phones' => $data['phones']
-        ]);
-
-        $this->logger->log("Создан контакт: " . json_encode($data));
-        return (int) $this->pdo->lastInsertId();
     }
 }

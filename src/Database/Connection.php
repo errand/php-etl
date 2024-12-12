@@ -6,10 +6,28 @@ use PDO;
 use PDOException;
 use Dotenv\Dotenv;
 
+/**
+ * Class Connection
+ *
+ * Singleton для управления подключением к базе данных.
+ * Создает и возвращает единственный экземпляр PDO.
+ */
 class Connection
 {
+    /**
+     * Единственный экземпляр PDO.
+     *
+     * @var PDO|null
+     */
     private static ?PDO $instance = null;
 
+    /**
+     * Возвращает экземпляр PDO.
+     * Если соединение еще не установлено, создает новое.
+     *
+     * @return PDO
+     * @throws \PDOException Если не удается подключиться к базе данных.
+     */
     public static function getInstance(): PDO
     {
         if (self::$instance === null) {

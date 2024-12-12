@@ -6,23 +6,44 @@ use Database\Connection;
 use DOMDocument;
 use PDO;
 
+/**
+ * Класс для генерации XML лент с данными агентств, контактов, менеджеров и объектов недвижимости.
+ *
+ * @package Services
+ */
 class FeedGenerator
 {
+    /**
+     * @var PDO
+     * Экземпляр соединения с базой данных.
+     */
     private PDO $pdo;
 
+    /**
+     * FeedGenerator constructor.
+     * Инициализирует соединение с базой данных.
+     */
     public function __construct()
     {
         $this->pdo = Connection::getInstance();
     }
 
+    /**
+     * Генерация XML ленты агентств недвижимости.
+     *
+     * @return string XML строка с данными агентств.
+     */
     public function generateAgenciesFeed(): string
     {
+        // Создание нового XML документа
         $dom = new DOMDocument('1.0', 'UTF-8');
         $root = $dom->createElement('agencies');
         $dom->appendChild($root);
 
+        // Запрос всех агентств
         $query = $this->pdo->query("SELECT * FROM agency");
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            // Создание элемента для каждого агентства
             $agency = $dom->createElement('agency');
 
             $id = $dom->createElement('id', htmlspecialchars((string)$row['id'], ENT_XML1, 'UTF-8'));
@@ -33,12 +54,20 @@ class FeedGenerator
             $root->appendChild($agency);
         }
 
+        // Возвращение XML строки
         return $dom->saveXML();
     }
 
-
+    /**
+     * Генерация XML ленты контактов.
+     *
+     * @param int|null $agencyId Идентификатор агентства для фильтрации (по умолчанию null, чтобы вернуть все контакты).
+     *
+     * @return string XML строка с данными контактов.
+     */
     public function generateContactsFeed(?int $agencyId = null): string
     {
+        // Запрос контактов с возможностью фильтрации по агентству
         $query = "
             SELECT c.*, a.name AS agency_name
             FROM contacts c
@@ -50,6 +79,7 @@ class FeedGenerator
         $stmt->execute([':agencyId' => $agencyId]);
         $contacts = $stmt->fetchAll();
 
+        // Создание XML документа
         $xml = new \SimpleXMLElement('<contacts/>');
         foreach ($contacts as $contact) {
             $contactNode = $xml->addChild('contact');
@@ -61,11 +91,20 @@ class FeedGenerator
             }
         }
 
+        // Возвращение XML строки
         return $xml->asXML();
     }
 
+    /**
+     * Генерация XML ленты менеджеров.
+     *
+     * @param int|null $agencyId Идентификатор агентства для фильтрации (по умолчанию null, чтобы вернуть всех менеджеров).
+     *
+     * @return string XML строка с данными менеджеров.
+     */
     public function generateManagersFeed(?int $agencyId = null): string
     {
+        // Запрос менеджеров с возможностью фильтрации по агентству
         $query = "
         SELECT m.*, a.name AS agency_name
         FROM manager m
@@ -77,8 +116,8 @@ class FeedGenerator
         $stmt->execute([':agencyId' => $agencyId]);
         $managers = $stmt->fetchAll();
 
+        // Создание XML документа
         $xml = new \SimpleXMLElement('<managers/>');
-
         foreach ($managers as $manager) {
             $managerNode = $xml->addChild('manager');
             $managerNode->addChild('id', (string)$manager['id']);
@@ -86,11 +125,20 @@ class FeedGenerator
             $managerNode->addChild('agency', $manager['agency_name']);
         }
 
+        // Возвращение XML строки
         return $xml->asXML();
     }
 
+    /**
+     * Генерация XML ленты объектов недвижимости.
+     *
+     * @param array $filters Массив фильтров для выборки объектов недвижимости.
+     *
+     * @return string XML строка с данными объектов недвижимости.
+     */
     public function generateEstatesFeed(array $filters): string
     {
+        // Запрос объектов недвижимости с возможностью фильтрации по агентству, контакту и менеджеру
         $query = "
         SELECT e.*, c.name AS contact_name, m.name AS manager_name, a.name AS agency_name
         FROM estate e
@@ -102,8 +150,6 @@ class FeedGenerator
           AND (:manager_id IS NULL OR m.id = :manager_id)
     ";
 
-        var_dump($filters);
-
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
             ':agency_id' => $filters['agency_id'],
@@ -112,8 +158,8 @@ class FeedGenerator
         ]);
         $estates = $stmt->fetchAll();
 
+        // Создание XML документа
         $xml = new \SimpleXMLElement('<estates/>');
-
         foreach ($estates as $estate) {
             $estateNode = $xml->addChild('estate');
             $estateNode->addChild('id', (string)$estate['id']);
@@ -128,8 +174,7 @@ class FeedGenerator
             $estateNode->addChild('agency', $estate['agency_name']);
         }
 
+        // Возвращение XML строки
         return $xml->asXML();
     }
-
-
 }
