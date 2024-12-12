@@ -25,6 +25,7 @@
 │ └── estate.xlsx 
 │ └── estate-update.xlsx 
 ├── /public 
+│ ├── api.php 
 │ ├── import.php 
 │ ├── import-data.php 
 ├── /src 
@@ -51,7 +52,7 @@
 
 ### Описание структуры:
 
-- **/public** - Содержит публичные файлы, такие как `import.php` и `import-data.php`.
+- **/public** - Содержит публичные файлы, такие как `api.php`, `import.php` и `import-data.php`.
 - **/data** - Хранит Excel файлы, такие как `estate.xlsx` и дамп SQL.
 - **/src/Services** - Сервисы для импорта данных, обновления и генерации фидов.
 - **/src/Models** - Модели, представляющие сущности базы данных: агентства, менеджеры, контакты, объявления.
