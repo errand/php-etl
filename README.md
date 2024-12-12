@@ -41,7 +41,6 @@
 │ │ ├── Manager.php 
 │ ├── Services 
 │ │ ├── ExcelImporter.php 
-│ │ ├── DatabaseUpdater.php 
 │ │ └── FeedGenerator.php 
 │ └── /Utils 
 │ │ └── Logger.php 
