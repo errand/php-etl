@@ -71,12 +71,14 @@ cd php-etl
 
 2. Создайте файл .env в корне проекта.
 Заполните тестовыми кредами
+   
    ```
    DB_HOST=db
    DB_PORT=3306
    DB_DATABASE=real_estate
    DB_USERNAME=user
-   DB_PASSWORD=password```
+   DB_PASSWORD=password
+   ```
 
 3. Соберите и запустите контейнеры:
 ```docker-compose up --build```
