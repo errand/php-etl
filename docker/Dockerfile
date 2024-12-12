@@ -1,5 +1,6 @@
 FROM php:8.3-fpm
 
+# Установка необходимых пакетов
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -25,18 +26,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Устанавливаем рабочую директорию
 WORKDIR /var/www/html
 
-# Копируем только composer.json и composer.lock для установки зависимостей
-COPY ../composer.json ../composer.lock ./
+# Копируем только composer.json и composer.lock
+COPY composer.json composer.lock ./
+
+# Устанавливаем зависимости
 RUN composer install --no-dev --optimize-autoloader
 
-# Копируем все остальные файлы проекта
-COPY ../ ./
+# Копируем остальные файлы проекта
+COPY . /var/www/html
 
 # Устанавливаем права
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Настраиваем рабочую директорию для PHP
+# Настраиваем рабочую директорию
 WORKDIR /var/www/html/public
 
 # Указываем порт

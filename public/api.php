@@ -6,7 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Services\FeedGenerator;
 
-//header('Content-Type: application/xml; charset=utf-8');
+header('Content-Type: application/xml; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_SERVER['REQUEST_URI'];
@@ -14,25 +14,15 @@ $path = $_SERVER['REQUEST_URI'];
 // Создаём экземпляры необходимых классов
 $feedGenerator = new FeedGenerator();
 
-// Разбираем путь запроса
-$path = parse_url($path);
+$parsedUrl = parse_url($path);
+$path = $parsedUrl['path']; // Извлекаем только путь
 $pathParts = explode('/', trim($path, '/'));
 
-
-echo "<note>
-<to>$pathParts</to>
-<from>Jani</from>
-<heading>Reminder</heading>
-<body>Don't forget me this weekend!</body>
-</note>";
-
 if ($method === 'GET' && $pathParts[0] === 'api') {
-    echo '<response><status>success</status></response>';
     // Обработка эндпоинтов
     switch ($pathParts[1]) {
         case 'agencies':
-            //echo $feedGenerator->generateAgenciesFeed();
-            echo '<response><status>success</status></response>';
+            echo $feedGenerator->generateAgenciesFeed();
             break;
 
         case 'contacts':

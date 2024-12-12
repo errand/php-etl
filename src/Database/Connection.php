@@ -16,11 +16,11 @@ class Connection
             $dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
             $dotenv->load();
 
-            $host = $_ENV['DB_HOST'] ?? 'localhost';
+            $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
             $port = $_ENV['DB_PORT'] ?? '3306';
             $dbName = $_ENV['DB_DATABASE'] ?? 'real_estate';
             $username = $_ENV['DB_USERNAME'] ?? 'user';
-            $password = $_ENV['DB_PASSWORD'] ?? '';
+            $password = $_ENV['DB_PASSWORD'] ?? 'password';
 
             $dsn = "mysql:host=$host;port=$port;dbname=$dbName;charset=utf8mb4";
 

@@ -1,8 +1,8 @@
 services:
   php-fpm:
     build:
-      context: ./docker
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/Dockerfile
     volumes:
       - ./public:/var/www/html/public
       - ./data:/var/www/html/data
@@ -35,6 +35,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./data/mysql/dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    networks:
+      - app-network
 
 volumes:
   db_data:

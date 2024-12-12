@@ -74,15 +74,28 @@ cd php-etl
 
 3. Пример работы скрипта:
 
-```php public/import-data.php estate.xlsx```
+Можно запустить первичный импорт
+
+```http://localhost/import.php```
+
+Можно зайти в контейнер и запустить скрипт обновления
+
+```
+docker ps
+docker exec -it <php-fpm-container-id> bash 
+php import-data.php estate_update.xlsx
+```
 
 
 ## API
 Эндпоинты:
 - GET /api/agencies - Получить список всех агентств.
 - GET /api/contacts - Получить список всех контактов с возможностью фильтрации по агентству.
+- GET /api/contacts?agency_id - Получить список всех контактов c фильтром.
 - GET /api/managers - Получить список всех менеджеров с возможностью фильтрации по агентству.
+- GET /api/managers?agency_id=2 - Получить список всех менеджеров  с фильтром по agency_id
 - GET /api/estates - Получить список всех объявлений с фильтрацией по агентству, контакту, менеджеру.
+- GET /api/estates?agency_id=2&contact_id=3 - Получить список объявлений с фильтром по параметрам
 
 Формат ответа: XML.
 
@@ -92,3 +105,5 @@ cd php-etl
 
 ## Автор 
 Александр Шацких
+
+work@errand.ru

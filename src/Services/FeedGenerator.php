@@ -73,7 +73,7 @@ class FeedGenerator
         WHERE (:agencyId IS NULL OR m.agency_id = :agencyId)
     ";
 
-        $stmt = $this->pdo->getConnection()->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute([':agencyId' => $agencyId]);
         $managers = $stmt->fetchAll();
 
@@ -102,7 +102,9 @@ class FeedGenerator
           AND (:manager_id IS NULL OR m.id = :manager_id)
     ";
 
-        $stmt = $this->pdo->getConnection()->prepare($query);
+        var_dump($filters);
+
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute([
             ':agency_id' => $filters['agency_id'],
             ':contact_id' => $filters['contact_id'],
